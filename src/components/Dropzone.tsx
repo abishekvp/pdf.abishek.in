@@ -146,15 +146,22 @@ export const Dropzone: React.FC<DropzoneProps> = ({ tool, onFilesSelected }) => 
           {tool.id === "unlock" && "Drop PDF here to remove password protection"}
         </h2>
 
-        <p className="text-sm sm:text-base text-slate-400 max-w-lg mb-8">
+        <p className="text-sm sm:text-base text-slate-400 max-w-lg mb-4">
           Drag and drop your file{tool.multiple ? "s" : ""} here, or click anywhere to browse from your device
         </p>
+
+        {/* Accepted format badge */}
+        <div className="mb-8 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-subtle/80 border border-surface-border text-slate-300 text-xs font-mono">
+          <span className="w-1.5 h-1.5 rounded-full bg-rose-400" />
+          <span>Accepts: {tool.accept || "PDF"}</span>
+          {tool.multiple && <span className="text-rose-400 font-semibold">• Multi-file</span>}
+        </div>
 
         {/* Primary Action Button */}
         <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
           <button
             type="button"
-            className="flex items-center gap-2.5 px-6 sm:px-8 py-3.5 rounded-2xl bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white font-bold text-sm sm:text-base shadow-xl shadow-rose-950/50 hover:shadow-rose-600/30 transition-all cursor-pointer"
+            className="flex items-center gap-2.5 px-6 sm:px-8 py-3.5 rounded-2xl bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white font-bold text-sm sm:text-base shadow-xl shadow-rose-950/50 hover:shadow-rose-600/30 transition-all cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
           >
             <UploadCloud className="w-5 h-5" />
             <span>Select {tool.multiple ? "Files" : "File"}</span>
@@ -164,7 +171,7 @@ export const Dropzone: React.FC<DropzoneProps> = ({ tool, onFilesSelected }) => 
             type="button"
             onClick={handleLoadSample}
             disabled={isGeneratingSample}
-            className="flex items-center gap-2 px-5 py-3.5 rounded-2xl bg-surface-subtle hover:bg-surface-hover border border-surface-border hover:border-slate-500 text-slate-200 font-semibold text-xs sm:text-sm transition-all cursor-pointer shadow-md"
+            className="flex items-center gap-2 px-5 py-3.5 rounded-2xl bg-surface-subtle hover:bg-surface-hover border border-surface-border hover:border-slate-500 text-slate-200 font-semibold text-xs sm:text-sm transition-all cursor-pointer shadow-md hover:scale-[1.02] active:scale-[0.98]"
           >
             <Sparkles className="w-4 h-4 text-amber-400" />
             <span>{isGeneratingSample ? "Preparing Sample..." : "Try with Sample File"}</span>

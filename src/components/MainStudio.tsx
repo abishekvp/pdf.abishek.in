@@ -57,7 +57,32 @@ import {
   Copy,
   Check,
   Plus,
+  Minimize2,
+  Image,
+  FileImage,
+  FileOutput,
+  Combine,
+  Split,
+  LayoutGrid,
+  Stamp,
+  Lock,
+  Unlock,
+  ArrowRight,
 } from "lucide-react";
+
+const ICON_MAP: Record<string, React.ElementType> = {
+  Minimize2,
+  Image,
+  FileImage,
+  FileText,
+  FileOutput,
+  Combine,
+  Split,
+  LayoutGrid,
+  Stamp,
+  Lock,
+  Unlock,
+};
 
 export function MainStudio() {
   const [activeTool, setActiveTool] = useState<ToolId>("compress");
@@ -355,21 +380,21 @@ export function MainStudio() {
       <Header activeTool={activeTool} onSelectTool={handleToolChange} />
       <ToolSwitcherBar activeTool={activeTool} onSelectTool={handleToolChange} />
 
-      {/* Main Container - Full Screen Width */}
-      <main className="flex-1 w-full max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      {/* Main Container - Full Screen Width with spacious breathing room */}
+      <main className="flex-1 w-full max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-10 pb-16">
         {files.length === 0 ? (
           /* Empty / Upload View */
-          <div className="space-y-12">
+          <div className="space-y-12 sm:space-y-14">
             {/* Tool Title & Tagline */}
-            <div className="text-center max-w-3xl mx-auto pt-4">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-bold uppercase tracking-wider mb-4">
+            <div className="text-center max-w-3xl mx-auto pt-2 sm:pt-4">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-bold uppercase tracking-wider mb-4 shadow-sm shadow-rose-950/20">
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>{currentToolMeta.name} Studio</span>
               </div>
-              <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight mb-3">
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight mb-4">
                 {currentToolMeta.name}
               </h1>
-              <p className="text-base sm:text-lg text-slate-400">
+              <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
                 {currentToolMeta.shortDesc}. High speed, client-side, zero cloud uploads.
               </p>
             </div>
@@ -378,37 +403,46 @@ export function MainStudio() {
             <Dropzone tool={currentToolMeta} onFilesSelected={handleFilesSelected} />
 
             {/* Other Popular Tools Quick Grid */}
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400">
-                  Popular PDF Utilities
-                </h3>
+            <div className="pt-2">
+              <div className="flex items-center justify-between mb-5">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-rose-500" />
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-slate-300">
+                    Popular PDF Utilities
+                  </h3>
+                </div>
+                <span className="text-xs text-slate-500 font-medium hidden sm:inline">
+                  Click any tool to switch
+                </span>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3.5">
                 {TOOLS.filter((t) => t.id !== activeTool)
                   .slice(0, 8)
-                  .map((t) => (
-                    <button
-                      key={t.id}
-                      onClick={() => handleToolChange(t.id)}
-                      className="p-4 rounded-2xl bg-surface-card hover:bg-surface-subtle border border-surface-border hover:border-slate-600 text-left transition-all group flex items-start gap-3.5 cursor-pointer shadow-md"
-                    >
-                      <div
-                        className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform"
-                        style={{ backgroundColor: `${t.color}20`, color: t.color }}
+                  .map((t) => {
+                    const ToolIcon = ICON_MAP[t.icon] || FileText;
+                    return (
+                      <button
+                        key={t.id}
+                        onClick={() => handleToolChange(t.id)}
+                        className="p-4 sm:p-5 rounded-2xl bg-surface-card hover:bg-surface-subtle border border-surface-border/80 hover:border-rose-500/40 text-left transition-all duration-200 group flex items-start gap-3.5 cursor-pointer shadow-md hover:shadow-xl hover:shadow-rose-950/20 hover:-translate-y-0.5"
                       >
-                        <FileText className="w-5 h-5" />
-                      </div>
-                      <div className="overflow-hidden">
-                        <div className="text-xs sm:text-sm font-bold text-white group-hover:text-rose-400 transition-colors truncate">
-                          {t.name}
+                        <div
+                          className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform shadow-inner"
+                          style={{ backgroundColor: `${t.color}20`, color: t.color }}
+                        >
+                          <ToolIcon className="w-5 h-5" />
                         </div>
-                        <div className="text-[11px] text-slate-400 line-clamp-1 mt-0.5">
-                          {t.shortDesc}
+                        <div className="overflow-hidden">
+                          <div className="text-xs sm:text-sm font-bold text-white group-hover:text-rose-400 transition-colors truncate">
+                            {t.name}
+                          </div>
+                          <div className="text-[11px] text-slate-400 line-clamp-1 mt-0.5">
+                            {t.shortDesc}
+                          </div>
                         </div>
-                      </div>
-                    </button>
-                  ))}
+                      </button>
+                    );
+                  })}
               </div>
             </div>
 
@@ -418,12 +452,12 @@ export function MainStudio() {
           </div>
         ) : (
           /* High-Visibility Full Screen Studio Workspace */
-          <div className="space-y-6">
+          <div className="space-y-6 sm:space-y-8">
             {/* Top Workspace Bar */}
-            <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl bg-surface-card border border-surface-border">
-              <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl bg-surface-card border border-surface-border/80 shadow-lg">
+              <div className="flex items-center gap-3.5">
                 <div
-                  className="w-10 h-10 rounded-xl flex items-center justify-center font-bold"
+                  className="w-11 h-11 rounded-xl flex items-center justify-center font-bold shadow-inner"
                   style={{
                     backgroundColor: `${currentToolMeta.color}20`,
                     color: currentToolMeta.color,
@@ -432,16 +466,16 @@ export function MainStudio() {
                   <FileText className="w-5 h-5" />
                 </div>
                 <div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2.5">
                     <span className="font-bold text-base text-white">
                       {files.length === 1 ? files[0].name : `${files.length} Files Selected`}
                     </span>
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-surface-subtle border border-surface-border text-slate-300 font-mono">
+                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-surface-subtle border border-surface-border text-slate-300 font-mono font-medium">
                       {formatBytes(totalInputSize)}
                     </span>
                   </div>
-                  <div className="text-xs text-slate-400">
-                    Mode: {currentToolMeta.name} • 100% Client-Side
+                  <div className="text-xs text-slate-400 mt-0.5">
+                    Mode: <span className="text-slate-300 font-semibold">{currentToolMeta.name}</span> • 100% Client-Side Privacy
                   </div>
                 </div>
               </div>
@@ -450,9 +484,9 @@ export function MainStudio() {
                 <button
                   type="button"
                   onClick={handleClearFiles}
-                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-surface-subtle hover:bg-surface-hover text-slate-300 hover:text-white border border-surface-border text-xs font-semibold transition-all cursor-pointer"
+                  className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-surface-subtle hover:bg-rose-500/15 text-slate-300 hover:text-rose-300 border border-surface-border hover:border-rose-500/30 text-xs font-semibold transition-all cursor-pointer shadow-sm"
                 >
-                  <Trash2 className="w-3.5 h-3.5 text-slate-400" />
+                  <Trash2 className="w-3.5 h-3.5 text-slate-400 group-hover:text-rose-400" />
                   <span>Clear & Restart</span>
                 </button>
               </div>
@@ -461,15 +495,15 @@ export function MainStudio() {
             {/* 2-Column Full Screen Grid: Left Preview Canvas, Right Settings Panel */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
               {/* Left Column (Canvas / Thumbnails / Live Viewer) - Takes 7 of 12 columns */}
-              <div className="lg:col-span-7 bg-surface-card rounded-3xl border border-surface-border p-5 sm:p-6 min-h-[500px] flex flex-col justify-between">
+              <div className="lg:col-span-7 bg-surface-card rounded-3xl border border-surface-border/80 p-5 sm:p-7 min-h-[520px] flex flex-col justify-between shadow-xl">
                 <div>
-                  <div className="flex items-center justify-between pb-4 mb-4 border-b border-surface-border">
+                  <div className="flex items-center justify-between pb-4 mb-5 border-b border-surface-border/80">
                     <h3 className="text-sm font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2">
                       <Eye className="w-4 h-4 text-rose-400" />
                       <span>Document Canvas & Preview</span>
                     </h3>
                     {files[0]?.pageCount && (
-                      <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-surface-subtle text-slate-300 border border-surface-border">
+                      <span className="text-xs font-bold px-3 py-1 rounded-full bg-surface-subtle text-slate-300 border border-surface-border">
                         {files[0].pageCount} {files[0].pageCount === 1 ? "Page" : "Pages"}
                       </span>
                     )}
